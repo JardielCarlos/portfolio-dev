@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     images: [
       {
-        url: '/images/logoJardiel.svg',
+        url: '/images/logoJardiel.png',
         width: 180,
         height: 49,
         alt: 'Logo Jardiel Dev Full Stack',
