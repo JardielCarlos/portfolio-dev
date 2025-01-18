@@ -17,7 +17,21 @@ export const metadata: Metadata = {
     {
       url: '/favicon.svg',
     }
-  ]
+  ],
+  openGraph: {
+    title: 'Jardiel Carlos | Desenvolvedor Full Stack',
+    description: 'Portfólio de Jardiel Carlos, desenvolvedor Full Stack',
+    url: 'https://jardiel-dev.vercel.app',
+    locale: 'pt_BR',
+    images: [
+      {
+        url: '/images/Component 1.svg',
+        width: 180,
+        height: 49,
+        alt: 'Logo Jardiel Dev Full Stack',
+      },
+    ],
+  },
 }
 
 const inter = Inter({
