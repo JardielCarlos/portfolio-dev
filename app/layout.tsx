@@ -9,6 +9,7 @@ import { Metadata } from 'next'
 import { Toaster } from './components/toaster'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://jardiel-dev.vercel.app'),
   title: {
     default: 'Home',
     template: '%s | Jardiel-Dev',
