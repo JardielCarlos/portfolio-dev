@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import toast from "react-hot-toast";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { z } from "zod";
@@ -11,9 +11,9 @@ import { SectionTitle } from "../section-title";
 import { fadeUpAnimation } from "@/app/lib/animation";
 
 const contactFormSchema = z.object({
-  name: z.string().min(3).max(50),
-  email: z.string().email(),
-  message: z.string().min(1).max(500)
+  name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres").max(50, "Nome pode ter no máximo 50 caracteres"),
+  email: z.string().email("E-mail inválido"),
+  message: z.string().min(1, "Mensagem não pode estar vazia").max(500, "Mensagem pode ter no máximo 500 caracteres")
 })
 
 type ContactFormData = z.infer<typeof contactFormSchema>
@@ -41,6 +41,13 @@ export const ContactForm = () => {
     }
   }
 
+  const onError = (errors: FieldErrors<ContactFormData>) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError) {
+      toast.error(firstError.message);
+    }
+  }
+
   return (
     <section id="contact" className="py-16 px-6 md:py-32 flex items-center justify-center bg-gray-950">
       <div className="w-full max-w-[420px] mx-auto">
@@ -52,7 +59,8 @@ export const ContactForm = () => {
 
         <motion.form
           className="mt-12 w-full flex flex-col gap-4"
-          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          onSubmit={handleSubmit(onSubmit, onError)}
           {...fadeUpAnimation}
         >
           <input
