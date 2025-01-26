@@ -4,6 +4,7 @@ import { TechBadge } from "@/app/components/tech-bagde"
 import { fadeUpAnimation, techBadgeAnimation } from "@/app/lib/animation"
 import { WorkExperience } from "@/app/types/work-experience"
 import { differenceInMonths, differenceInYears, format } from "date-fns"
+import { format as formatTZ, toZonedTime } from "date-fns-tz"
 import { ptBR } from "date-fns/locale/pt-BR"
 import { motion } from "framer-motion"
 import Image from "next/image"
@@ -23,13 +24,15 @@ export const ExperienceItem = ({ experience }: ExperienceItemProps) => {
     technologies,
   } = experience
 
-  const startDate = new Date(experience.startDate)
-  const formattedStartDate = format(startDate, 'MMM yyyy', { locale: ptBR })
-  const formattedEndDate = endDate
-    ? format(new Date(endDate), 'MMM yyyy', { locale: ptBR })
+  const startDate = toZonedTime(new Date(experience.startDate), 'UTC') 
+
+  const formattedStartDate = formatTZ(startDate, 'MMM yyyy', { locale: ptBR })
+
+    const formattedEndDate = endDate
+    ? formatTZ(toZonedTime(new Date(endDate), 'UTC'), 'MMM yyyy', { locale: ptBR })
     : 'O momento'
 
-  const end = endDate ? new Date(endDate) : new Date()
+  const end = endDate ? toZonedTime(new Date(endDate), 'UTC') : new Date()
 
   const months = differenceInMonths(end, startDate)
   const years = differenceInYears(end, startDate)

@@ -6,7 +6,7 @@ type WorkExperienceProps = {
   experiences: IWorkExperience[]
 }
 
-export const WorkExperience = ({ experiences }: WorkExperienceProps) => {7
+export const WorkExperience = ({ experiences }: WorkExperienceProps) => {
   return (
     <section className="container py-16 flex gap-10 md:gp-4 lg:gap-16 flex-col md:flex-row">
       <div className="max-w-[420px]">
