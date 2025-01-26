@@ -37,14 +37,12 @@ export function getRelativeTimeString(
   }
 
   if (!result) {
-    if (days > 0) {
+    if (days > 1) {
+      if (result) result += ' e '
       result += `${days} dias`
-    } else if (hours > 0) {
-      result += `${hours} horas`
-    } else if (minutes > 0) {
-      result += `${minutes} minutos`
-    } else {
-      result += `${seconds} segundos`
+    } else if (days === 1) {
+      if (result) result += ' e '
+      result += `1 dia`
     }
   }
 
