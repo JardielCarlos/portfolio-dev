@@ -1,3 +1,6 @@
+import { differenceInDays, differenceInHours, differenceInMinutes, differenceInMonths, differenceInSeconds, differenceInYears } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+
 /**
  * Convert a date to a relative time string, such as
  * "a minute ago", "in 2 hours", "yesterday", "3 months ago", etc.
@@ -5,46 +8,45 @@
  */
 export function getRelativeTimeString(
   date: Date | number,
-  lang = navigator.language,
 ): string {
-  // Allow dates or times to be passed
-  const timeMs = typeof date === 'number' ? date : date.getTime()
+  const now = new Date()
+  const targetDate = toZonedTime(new Date(date), 'UTC')
 
-  // Get the amount of seconds between the given date and now
-  const deltaSeconds = Math.round((timeMs - Date.now()) / 1000)
+  const years = differenceInYears(now, targetDate)
+  const totalMonths = differenceInMonths(now, targetDate)
+  const months = totalMonths % 12
+  const days = differenceInDays(now, targetDate) - (totalMonths * 30)
+  const hours = differenceInHours(now, targetDate) % 24
+  const minutes = differenceInMinutes(now, targetDate) % 60
+  const seconds = differenceInSeconds(now, targetDate) % 60
 
-  // Array reprsenting one minute, hour, day, week, month, etc in seconds
-  const cutoffs = [
-    60,
-    3600,
-    86400,
-    86400 * 7,
-    86400 * 30,
-    86400 * 365,
-    Infinity,
-  ]
+  let result = ""
 
-  // Array equivalent to the above but in the string representation of the units
-  const units: Intl.RelativeTimeFormatUnit[] = [
-    'second',
-    'minute',
-    'hour',
-    'day',
-    'week',
-    'month',
-    'year',
-  ]
+  if (years > 1) {
+    result += `${years} anos`
+  } else if (years === 1) {
+    result += `1 ano`
+  }
 
-  // Grab the ideal cutoff unit
-  const unitIndex = cutoffs.findIndex(
-    (cutoff) => cutoff > Math.abs(deltaSeconds),
-  )
+  if (months > 1) {
+    if (result) result += ' e '
+    result += `${months} meses`
+  } else if (months === 1) {
+    if (result) result += ' e '
+    result += `1 mês`
+  }
 
-  // Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
-  // is one day in seconds, so we can divide our seconds by this to get the # of days
-  const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1
+  if (!result) {
+    if (days > 0) {
+      result += `${days} dias`
+    } else if (hours > 0) {
+      result += `${hours} horas`
+    } else if (minutes > 0) {
+      result += `${minutes} minutos`
+    } else {
+      result += `${seconds} segundos`
+    }
+  }
 
-  // Intl.RelativeTimeFormat do its magic
-  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-  return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex])
+  return result
 }
